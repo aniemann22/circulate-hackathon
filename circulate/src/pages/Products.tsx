@@ -1,9 +1,12 @@
 import React from 'react';
+import Header from "../components/Header.tsx";
+import Footer from "../components/Footer.tsx";
 
 const Products: React.FC = () => {
   return (
     <div>
-      <h1>Products Page</h1>
+      <Header />
+      <Footer />
     </div>
   );
 };
