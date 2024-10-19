@@ -1,8 +1,23 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
+  // Check if user is authenticated by checking localStorage for a token
+  useEffect(() => {
+    const token = localStorage.getItem('id_token');
+    setIsAuthenticated(!!token); // Set to true if token exists
+  }, []);
+
+  // Sign out function to clear token and navigate to login page
+  const handleSignOut = () => {
+    localStorage.removeItem('id_token'); // Remove token from local storage
+    setIsAuthenticated(false); // Update state to reflect sign-out
+    navigate('/'); // Redirect to home or login page
+  };
 
   const handleMouseEnter = (link: string) => {
     setHoveredLink(link);
@@ -46,7 +61,7 @@ const Header = () => {
       <div style={{ display: "flex", alignItems: "center", width: "200px", position: "absolute", left: "" }}>
         <img src="/logo.png" alt="Logo" style={{ height: "100px" }} />
       </div>
-  
+
       {/* Center navigation links */}
       <div
         style={{
@@ -67,7 +82,7 @@ const Header = () => {
         >
           Products
         </NavLink>
-  
+
         <NavLink
           to="/Home"
           style={({ isActive }) => linkStyle(isActive, "Home")}
@@ -76,27 +91,38 @@ const Header = () => {
         >
           Home
         </NavLink>
-  
+
         <NavLink
           to="/AboutUs"
           style={({ isActive }) => linkStyle(isActive, "AboutUs")}
           onMouseEnter={() => handleMouseEnter("AboutUs")}
           onMouseLeave={handleMouseLeave}
-          
         >
           About Us
         </NavLink>
       </div>
 
-      {/* Right side static Account text */}
+      {/* Right side - Sign Out if authenticated, else Sign In */}
       <div style={{ display: "flex", alignItems: "center", marginLeft: "auto", paddingRight: "20px" }}>
-        <span
-          style={linkStyle(false, "Account")}
-          onMouseEnter={() => handleMouseEnter("Account")}
-          onMouseLeave={handleMouseLeave}
-        >
-          Account
-        </span>
+        {isAuthenticated ? (
+          <span
+            style={linkStyle(false, "SignOut")}
+            onClick={handleSignOut}
+            onMouseEnter={() => handleMouseEnter("SignOut")}
+            onMouseLeave={handleMouseLeave}
+          >
+            Sign Out
+          </span>
+        ) : (
+          <NavLink
+            to="https://circulatesignup.auth.us-east-1.amazoncognito.com/login?client_id=7s7o7e3tm5e8220l8f3947n8rj&response_type=code&scope=email+openid+phone&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback" 
+            style={({ isActive }) => linkStyle(isActive, "SignIn")}
+            onMouseEnter={() => handleMouseEnter("SignIn")}
+            onMouseLeave={handleMouseLeave}
+          >
+            Sign In
+          </NavLink>
+        )}
       </div>
     </div>
   );
