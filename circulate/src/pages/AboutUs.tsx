@@ -1,9 +1,10 @@
 import React from 'react';
+import Header from "../components/Header.tsx";
 
 const AboutUs: React.FC = () => {
   return (
     <div>
-      <h1>About Us Page</h1>
+      <Header />
     </div>
   );
 };
