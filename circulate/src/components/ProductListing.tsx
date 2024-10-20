@@ -300,15 +300,16 @@ const ProductListing: React.FC = () => {
             data-aos="fade-up" // Add AOS fade-up animation
           >
             <div
-              className="card h-100 d-flex flex-column position-relative product-card"
+              className="card h-100 d-flex flex-column position-relative product-card shadow-lg rounded hover-scale" // Add hover-scale and shadow effect
               onClick={() => handleCardClick(product)}
+              style={{ transition: "transform 0.2s, box-shadow 0.2s" }} // Smooth transition for hover effect
             >
               {product.imageUrl && (
                 <img
                   src={product.imageUrl}
                   className="card-img-top"
                   alt={product.title}
-                  style={{ objectFit: "cover", height: "200px" }}
+                  style={{ objectFit: "cover", height: "200px", borderTopLeftRadius: "10px", borderTopRightRadius: "10px" }} // Rounded image top corners
                 />
               )}
               <div className="card-body d-flex flex-column">

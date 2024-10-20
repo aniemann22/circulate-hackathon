@@ -1,11 +1,84 @@
-/* Add hover and shadow effects for product cards */
+/* General card styling */
 .product-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none; /* Remove default border */
+    background-color: #fff; /* White background */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Ensure image and content are inside rounded corners */
   }
   
   .product-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05); /* Slight scale on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Add shadow effect on hover */
+  }
+  
+  /* Image styling */
+  .product-card img {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+    transition: transform 0.3s ease;
+  }
+  
+  .product-card:hover img {
+    transform: scale(1.05); /* Scale the image on hover */
+  }
+  
+  /* Card body styling */
+  .product-card .card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* Title styling */
+  .product-card .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Description text styling */
+  .product-card .card-text {
+    color: #555;
+    font-size: 1rem;
+    flex-grow: 1;
+    margin-bottom: 1rem;
+  }
+  
+  /* Button hover effect */
+  .btn {
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn:hover {
+    background-color: #004d00; /* Darker green on hover */
+  }
+  
+  /* Modal image */
+  .modal img {
+    border-radius: 10px;
+    object-fit: cover;
+    width: 100%;
+  }
+  
+  /* Fade in effect for modal */
+  .modal.fade.show {
+    animation: fadeInModal 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeInModal {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
   
