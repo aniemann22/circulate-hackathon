@@ -178,9 +178,16 @@ const ProductListing: React.FC = () => {
 
   return (
     <div style={{ width: "100%", backgroundColor: "#D3D3D3" }}>
+      {/* Title Section */}
+      <div className="text-center mb-4" style={{ paddingTop: "20px" }}>
+        <h1 style={{ fontWeight: "bold", color: "#2B303A" }}>Marketplace</h1>
+        <p style={{ color: "#555" }}>Explore listings from students on campus</p>
+      </div>
+
+      {/* Centered button for creating a new listing */}
       <div
         className="d-flex justify-content-center mb-4"
-        style={{ paddingTop: "50px", width: "10%", backgroundColor: "#D3D3D3" }}
+        style={{ width: "10%", backgroundColor: "#D3D3D3" }}
       >
         <Button
           variant="contained"
