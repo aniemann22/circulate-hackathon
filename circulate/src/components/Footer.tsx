@@ -13,8 +13,7 @@ const Footer: React.FC = () => {
         position: 'relative',
         bottom: 0,
         left: 0,
-        // Make sure the footer sticks to the bottom when content height is less than viewport
-        minHeight: '100px', // Give a height to the footer
+        minHeight: '100px', // Ensure footer has a consistent height
       }}
     >
       <Container fluid>
@@ -25,26 +24,47 @@ const Footer: React.FC = () => {
             width: "100%",
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between', // Evenly space the contents
+            justifyContent: 'space-between', // Space the contents evenly
             flexWrap: 'wrap', // Wrap contents on smaller screens
           }}
         >
-        <Image
+          {/* AWS Logo Section */}
+          <Image
             src="/aws-logo.png" // Ensure the correct path to your AWS logo image
             alt="AWS Logo"
             style={{ height: '50px', marginRight: '15px' }}
             fluid
-        />
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            
+          />
+          
+          {/* AWS Technologies Section */}
+          <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
             <div>
-              <h5>Built with:</h5>
+              <h5>AWS Technologies</h5>
               <ul className="list-unstyled mb-0">
-                <li>React | TypeScript | React Bootstrap</li>
-                <li>OpenAI API | AWS</li>
+                <li>S3</li>
+                <li>DynamoDB</li>
+                <li>Cognito</li>
+                <li>Lambda</li>
+                <li>API Gateway</li>
               </ul>
             </div>
           </div>
+
+          {/* Powered By Section */}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div>
+              <h5>Powered by</h5>
+              <ul className="list-unstyled mb-0">
+                <li>React.js</li>
+                <li>MaterialUI</li>
+                <li>Bootstrap</li>
+                <li>Emotion</li>
+                <li>AOS</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Rights Reserved Section */}
           <div style={{ textAlign: 'right' }}>
             <p style={{ margin: 0 }}>
               © {new Date().getFullYear()} Gemhallics. All rights reserved.
