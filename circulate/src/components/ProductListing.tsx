@@ -14,6 +14,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info"; // Import MUI info icon
+import "./ProductListing.css"; // Add a custom CSS file for hover effects
 
 // Interface for the Product type
 interface Product {
@@ -296,9 +297,8 @@ const ProductListing: React.FC = () => {
         {products.map((product) => (
           <div className="col-md-3 mb-4" key={product.listingId}>
             <div
-              className="card h-100 d-flex flex-column position-relative"
+              className="card h-100 d-flex flex-column position-relative product-card"
               onClick={() => handleCardClick(product)}
-              style={{ cursor: "pointer" }}
             >
               {product.imageUrl && (
                 <img
