@@ -180,7 +180,7 @@ const ProductListing: React.FC = () => {
     <div style={{ width: "100%", backgroundColor: "#D3D3D3" }}>
       <div
         className="d-flex justify-content-center mb-4"
-        style={{ paddingTop: "50px", width: "100%", backgroundColor: "#D3D3D3" }}
+        style={{ paddingTop: "50px", width: "10%", backgroundColor: "#D3D3D3" }}
       >
         <Button
           variant="contained"
@@ -192,7 +192,7 @@ const ProductListing: React.FC = () => {
             fontWeight: "bold",
           }}
         >
-          Create a Listing
+          +
         </Button>
       </div>
 
