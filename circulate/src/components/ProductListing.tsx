@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import debounce from "lodash.debounce";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles for animations
 import {
   Dialog,
   DialogTitle,
@@ -13,7 +15,7 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info"; // Import MUI info icon
+import InfoIcon from "@mui/icons-material/Info";
 import "./ProductListing.css"; // Add a custom CSS file for hover effects
 
 // Interface for the Product type
@@ -22,21 +24,22 @@ interface Product {
   title: string;
   description: string;
   imageUrl: string;
-  isAnonymous?: boolean; // Add anonymous flag to each product
+  isAnonymous?: boolean;
 }
 
 const ProductListing: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [isAnonymous, setIsAnonymous] = useState<boolean>(false); // Toggle between anonymous or not
+  const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [products, setProducts] = useState<Product[]>([]); // State to hold the list of products
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
+    // Initialize AOS library for scroll animations
+    AOS.init({ duration: 2000, once: true });
     fetchProducts();
   }, []);
 
-  // Fetch products from the API
   const fetchProducts = async () => {
     try {
       const response = await fetch(
@@ -46,7 +49,7 @@ const ProductListing: React.FC = () => {
         const data = await response.json();
         const updatedProducts = data.map((product: Product, index: number) => ({
           ...product,
-          isAnonymous: index % 3 !== 0, // Simulate some products as anonymous
+          isAnonymous: index % 3 !== 0,
         }));
         setProducts(updatedProducts);
       } else {
@@ -57,10 +60,9 @@ const ProductListing: React.FC = () => {
     }
   };
 
-  // Function to generate description using OpenAI API
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [isGenerating, setIsGenerating] = useState(false); // For tracking if the description is being generated
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const generateDescription = async (title: string) => {
     if (title.trim() === "") {
@@ -103,7 +105,6 @@ const ProductListing: React.FC = () => {
     }
   };
 
-  // Debounced function for title changes
   const debouncedGenerateDescription = useMemo(
     () =>
       debounce((title: string) => {
@@ -112,7 +113,6 @@ const ProductListing: React.FC = () => {
     []
   );
 
-  // Effect for title changes
   useEffect(() => {
     if (title.trim()) {
       debouncedGenerateDescription(title);
@@ -152,18 +152,17 @@ const ProductListing: React.FC = () => {
           title,
           description,
           imageData,
-          isAnonymous, // Include isAnonymous in the request body
+          isAnonymous,
         }),
       }
     );
 
     if (response.ok) {
-      // Reset form fields and close modal
       setTitle("");
       setDescription("");
       setImage(null);
       setShowModal(false);
-      fetchProducts(); // Refresh the product list
+      fetchProducts();
     } else {
       console.log("Form submission failed");
     }
@@ -179,16 +178,13 @@ const ProductListing: React.FC = () => {
 
   return (
     <div style={{ width: "100%", backgroundColor: "#D3D3D3" }}>
-      {/* Centered button for creating a new listing */}
       <div
         className="d-flex justify-content-center mb-4"
         style={{ paddingTop: "50px", width: "100%", backgroundColor: "#D3D3D3" }}
       >
         <Button
           variant="contained"
-          onClick={() => {
-            setShowModal(true);
-          }}
+          onClick={() => setShowModal(true)}
           style={{
             backgroundColor: "#2B303A",
             color: "white",
@@ -200,7 +196,6 @@ const ProductListing: React.FC = () => {
         </Button>
       </div>
 
-      {/* Modal using MUI */}
       <Dialog open={showModal} onClose={() => setShowModal(false)} fullWidth maxWidth="md">
         <DialogTitle
           style={{
@@ -213,7 +208,6 @@ const ProductListing: React.FC = () => {
           Create a New Listing
         </DialogTitle>
         <DialogContent style={{ padding: "30px" }}>
-          {/* Anonymous Toggle with Tooltip */}
           <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
             <FormControlLabel
               control={
@@ -267,9 +261,7 @@ const ProductListing: React.FC = () => {
           <TextField
             fullWidth
             type="file"
-            inputProps={{
-              accept: "image/*",
-            }}
+            inputProps={{ accept: "image/*" }}
             onChange={handleImageChange}
             margin="normal"
           />
@@ -295,7 +287,11 @@ const ProductListing: React.FC = () => {
         style={{ width: "100%", justifyContent: "space-around", paddingLeft: "17px", backgroundColor: "#D3D3D3" }}
       >
         {products.map((product) => (
-          <div className="col-md-3 mb-4" key={product.listingId}>
+          <div
+            className="col-md-3 mb-4"
+            key={product.listingId}
+            data-aos="fade-up" // Add AOS fade-up animation
+          >
             <div
               className="card h-100 d-flex flex-column position-relative product-card"
               onClick={() => handleCardClick(product)}
@@ -317,7 +313,6 @@ const ProductListing: React.FC = () => {
         ))}
       </div>
 
-      {/* Selected Product Modal */}
       {selectedProduct && (
         <div
           className="modal fade show d-block"
@@ -372,46 +367,22 @@ const ProductListing: React.FC = () => {
                 }}
               >
                 <div>
-                  <h2 style={{
-                    marginBottom: "10px", 
-                    whiteSpace: "normal",  // Fix text wrapping
-                    wordWrap: "break-word", // Ensure long words wrap
-                    overflowWrap: "break-word"  // Ensure overflow text wraps
-                  }}>
+                  <h2 style={{ marginBottom: "10px", wordWrap: "break-word" }}>
                     {selectedProduct.title}
                   </h2>
                   {selectedProduct.isAnonymous && (
-                    <h6
-                      style={{
-                        color: "#888",
-                        marginBottom: "20px",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
+                    <h6 style={{ color: "#888", marginBottom: "20px" }}>
                       Owner: cck226@lehigh.edu
                     </h6>
                   )}
-                  <p style={{
-                    whiteSpace: "normal",  // Fix text wrapping
-                    wordWrap: "break-word",  // Ensure long words wrap
-                    overflowWrap: "break-word"  // Ensure overflow text wraps
-                  }}>
-                    {selectedProduct.description}
-                  </p>
+                  <p>{selectedProduct.description}</p>
                 </div>
 
                 <button
                   type="button"
                   className="btn"
-                  style={{
-                    alignSelf: "flex-start",
-                    marginTop: "10px",
-                    backgroundColor: "#2B303A", // Same color as other buttons
-                    color: "white",
-                  }}
-                  onClick={() =>
-                    alert("The owner of the post has been notified!")
-                  }
+                  style={{ alignSelf: "flex-start", marginTop: "10px", backgroundColor: "#2B303A", color: "white" }}
+                  onClick={() => alert("The owner of the post has been notified!")}
                 >
                   I am interested!
                 </button>
