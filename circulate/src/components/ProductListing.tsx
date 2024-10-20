@@ -178,30 +178,29 @@ const ProductListing: React.FC = () => {
 
   return (
     <div style={{ width: "100%", backgroundColor: "#D3D3D3" }}>
-      {/* Title Section */}
-      <div className="text-center mb-4" style={{ paddingTop: "20px" }}>
-        <h1 style={{ fontWeight: "bold", color: "#2B303A" }}>Marketplace</h1>
-        <p style={{ color: "#555" }}>Explore listings from students on campus</p>
-      </div>
-
-      {/* Centered button for creating a new listing */}
-      <div
-        className="d-flex justify-content-center mb-4"
-        style={{ width: "10%", backgroundColor: "#D3D3D3" }}
+      {/* Title and button on the same row */}
+      <div className="container">
+  <div className="row align-items-center mb-4" style={{ paddingTop: "60px" }}>
+    <div className="col-md-10 text-center text-md-left">
+      <h1 style={{ fontWeight: "bold", color: "#2B303A" }}>Marketplace</h1>
+      <p style={{ color: "#555" }}>Explore listings from students on campus</p>
+    </div>
+    <div className="col-md-2 text-md-right text-center ml-auto px-5"> {/* Adjusted with ml-auto and px-3 */}
+      <Button
+        variant="contained"
+        onClick={() => setShowModal(true)}
+        style={{
+          backgroundColor: "#2B303A",
+          color: "white",
+          fontSize: "1.5rem",
+          fontWeight: "bold",
+        }}
       >
-        <Button
-          variant="contained"
-          onClick={() => setShowModal(true)}
-          style={{
-            backgroundColor: "#2B303A",
-            color: "white",
-            fontSize: "1.5rem",
-            fontWeight: "bold",
-          }}
-        >
-          +
-        </Button>
-      </div>
+        +
+      </Button>
+    </div>
+  </div>
+</div>
 
       <Dialog open={showModal} onClose={() => setShowModal(false)} fullWidth maxWidth="md">
         <DialogTitle
