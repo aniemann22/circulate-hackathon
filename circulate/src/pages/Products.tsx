@@ -8,7 +8,7 @@ const Products: React.FC = () => {
     <div>
       <Header />
       <ProductListing />
-      
+  
       <Footer />
     </div>
   );
