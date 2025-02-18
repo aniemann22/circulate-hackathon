@@ -16,7 +16,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
-import "./ProductListing.css"; // Add a custom CSS file for hover effects
+import "./ProductListing.css"; // Custom CSS file for hover effects
 
 // Interface for the Product type
 interface Product {
@@ -32,38 +32,103 @@ const ProductListing: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
+
+  // Create 10 different realistic products as test data
+  const initialProducts: Product[] = [
+    {
+      listingId: "1",
+      title: "Vintage Leather Jacket",
+      description:
+        "A stylish vintage leather jacket in excellent condition. Perfect for a casual yet chic look.",
+      imageUrl: "https://picsum.photos/seed/1/400/300",
+      isAnonymous: false,
+    },
+    {
+      listingId: "2",
+      title: "Electric Guitar",
+      description:
+        "High-quality electric guitar with minor scratches. Great for beginners and pros alike.",
+      imageUrl: "https://picsum.photos/seed/2/400/300",
+      isAnonymous: false,
+    },
+    {
+      listingId: "3",
+      title: "Mountain Bike",
+      description:
+        "Durable mountain bike suitable for off-road adventures. Gently used and ready for your next trail.",
+      imageUrl: "https://picsum.photos/seed/3/400/300",
+      isAnonymous: true,
+    },
+    {
+      listingId: "4",
+      title: "Gaming Laptop",
+      description:
+        "Powerful gaming laptop with the latest specs. Ideal for both intense gaming sessions and work.",
+      imageUrl: "https://picsum.photos/seed/4/400/300",
+      isAnonymous: false,
+    },
+    {
+      listingId: "5",
+      title: "Sofa Set",
+      description:
+        "Comfortable sofa set, perfect for your living room. Includes two sofas and a matching coffee table.",
+      imageUrl: "https://picsum.photos/seed/5/400/300",
+      isAnonymous: false,
+    },
+    {
+      listingId: "6",
+      title: "Dining Table",
+      description:
+        "Elegant dining table made of solid wood, seating up to 6 people – a perfect centerpiece for your home.",
+      imageUrl: "https://picsum.photos/seed/6/400/300",
+      isAnonymous: true,
+    },
+    {
+      listingId: "7",
+      title: "Smartphone",
+      description:
+        "Latest smartphone model in pristine condition, barely used and full of features.",
+      imageUrl: "https://picsum.photos/seed/7/400/300",
+      isAnonymous: false,
+    },
+    {
+      listingId: "8",
+      title: "Bookshelf",
+      description:
+        "Modern bookshelf with ample space for your favorite books and decor items.",
+      imageUrl: "https://picsum.photos/seed/8/400/300",
+      isAnonymous: false,
+    },
+    {
+      listingId: "9",
+      title: "Coffee Maker",
+      description:
+        "Compact and efficient coffee maker, perfect for home or office use to kickstart your mornings.",
+      imageUrl: "https://picsum.photos/seed/9/400/300",
+      isAnonymous: true,
+    },
+    {
+      listingId: "10",
+      title: "Running Shoes",
+      description:
+        "Comfortable and durable running shoes, lightly used and in excellent shape.",
+      imageUrl: "https://picsum.photos/seed/10/400/300",
+      isAnonymous: false,
+    },
+  ];
+
+  const [products, setProducts] = useState<Product[]>(initialProducts);
 
   useEffect(() => {
     // Initialize AOS library for scroll animations
     AOS.init({ duration: 2000, once: true });
-    fetchProducts();
   }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch(
-        "https://r0uhjfa5sf.execute-api.us-east-1.amazonaws.com/Prod/getListing"
-      );
-      if (response.ok) {
-        const data = await response.json();
-        const updatedProducts = data.map((product: Product, index: number) => ({
-          ...product,
-          isAnonymous: index % 3 !== 0,
-        }));
-        setProducts(updatedProducts);
-      } else {
-        console.error("Failed to fetch products");
-      }
-    } catch (error) {
-      console.error("An error occurred while fetching products:", error);
-    }
-  };
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
 
+  // Function to generate a description using OpenAI's API
   const generateDescription = async (title: string) => {
     if (title.trim() === "") {
       setDescription("");
@@ -128,44 +193,28 @@ const ProductListing: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Instead of submitting to AWS, add the new listing directly to local state
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const toBase64 = (file: File) =>
-      new Promise<string | ArrayBuffer | null>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-      });
+    // Create a temporary image URL if a file is selected; otherwise, use a placeholder image.
+    const imageUrl = image ? URL.createObjectURL(image) : "https://via.placeholder.com/400x300";
 
-    const imageData = image ? await toBase64(image) : null;
+    const newProduct: Product = {
+      listingId: Date.now().toString(),
+      title,
+      description,
+      imageUrl,
+      isAnonymous,
+    };
 
-    const response = await fetch(
-      "https://r0uhjfa5sf.execute-api.us-east-1.amazonaws.com/Prod/createListing",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          imageData,
-          isAnonymous,
-        }),
-      }
-    );
+    setProducts([...products, newProduct]);
 
-    if (response.ok) {
-      setTitle("");
-      setDescription("");
-      setImage(null);
-      setShowModal(false);
-      fetchProducts();
-    } else {
-      console.log("Form submission failed");
-    }
+    // Reset form fields and close the modal
+    setTitle("");
+    setDescription("");
+    setImage(null);
+    setShowModal(false);
   };
 
   const handleCardClick = (product: Product) => {
@@ -180,27 +229,27 @@ const ProductListing: React.FC = () => {
     <div style={{ width: "100%", backgroundColor: "#D3D3D3" }}>
       {/* Title and button on the same row */}
       <div className="container">
-  <div className="row align-items-center mb-4" style={{ paddingTop: "60px" }}>
-    <div className="col-md-10 text-center text-md-left">
-      <h1 style={{ fontWeight: "bold", color: "#2B303A" }}>Marketplace</h1>
-      <p style={{ color: "#555" }}>Explore listings from students on campus</p>
-    </div>
-    <div className="col-md-2 text-md-right text-center ml-auto px-5"> {/* Adjusted with ml-auto and px-3 */}
-      <Button
-        variant="contained"
-        onClick={() => setShowModal(true)}
-        style={{
-          backgroundColor: "#2B303A",
-          color: "white",
-          fontSize: "1.5rem",
-          fontWeight: "bold",
-        }}
-      >
-        +
-      </Button>
-    </div>
-  </div>
-</div>
+        <div className="row align-items-center mb-4" style={{ paddingTop: "60px" }}>
+          <div className="col-md-10 text-center text-md-left">
+            <h1 style={{ fontWeight: "bold", color: "#2B303A" }}>Marketplace</h1>
+            <p style={{ color: "#555" }}>Explore listings from students on campus</p>
+          </div>
+          <div className="col-md-2 text-md-right text-center ml-auto px-5">
+            <Button
+              variant="contained"
+              onClick={() => setShowModal(true)}
+              style={{
+                backgroundColor: "#2B303A",
+                color: "white",
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+              }}
+            >
+              +
+            </Button>
+          </div>
+        </div>
+      </div>
 
       <Dialog open={showModal} onClose={() => setShowModal(false)} fullWidth maxWidth="md">
         <DialogTitle
@@ -296,19 +345,24 @@ const ProductListing: React.FC = () => {
           <div
             className="col-md-3 mb-4"
             key={product.listingId}
-            data-aos="fade-up" // Add AOS fade-up animation
+            data-aos="fade-up" // AOS fade-up animation
           >
             <div
-              className="card h-100 d-flex flex-column position-relative product-card shadow-lg rounded hover-scale" // Add hover-scale and shadow effect
+              className="card h-100 d-flex flex-column position-relative product-card shadow-lg rounded hover-scale"
               onClick={() => handleCardClick(product)}
-              style={{ transition: "transform 0.2s, box-shadow 0.2s" }} // Smooth transition for hover effect
+              style={{ transition: "transform 0.2s, box-shadow 0.2s" }}
             >
               {product.imageUrl && (
                 <img
                   src={product.imageUrl}
                   className="card-img-top"
                   alt={product.title}
-                  style={{ objectFit: "cover", height: "200px", borderTopLeftRadius: "10px", borderTopRightRadius: "10px" }} // Rounded image top corners
+                  style={{
+                    objectFit: "cover",
+                    height: "200px",
+                    borderTopLeftRadius: "10px",
+                    borderTopRightRadius: "10px",
+                  }}
                 />
               )}
               <div className="card-body d-flex flex-column">
@@ -388,7 +442,12 @@ const ProductListing: React.FC = () => {
                 <button
                   type="button"
                   className="btn"
-                  style={{ alignSelf: "flex-start", marginTop: "10px", backgroundColor: "#2B303A", color: "white" }}
+                  style={{
+                    alignSelf: "flex-start",
+                    marginTop: "10px",
+                    backgroundColor: "#2B303A",
+                    color: "white",
+                  }}
                   onClick={() => alert("The owner of the post has been notified!")}
                 >
                   I am interested!
